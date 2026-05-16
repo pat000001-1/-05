@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快意人生｜後台管理系統</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0D0F12;
+  --bg2: #131619;
+  --bg3: #1A1E23;
+  --bg4: #21262D;
+  --border: rgba(255,255,255,0.07);
+  --border-gold: rgba(201,168,76,0.25);
+  --gold: #C9A84C;
+  --gold-light: #E8C97A;
+  --text: #CDD4DE;
+  --text-muted: #606878;
+  --text-bright: #F0F4F8;
+  --green: #3FB950;
+  --green-bg: rgba(63,185,80,0.1);
+  --blue: #58A6FF;
+  --blue-bg: rgba(88,166,255,0.1);
+  --purple: #BC8CFF;
+  --purple-bg: rgba(188,140,255,0.1);
+  --orange: #F0883E;
+  --orange-bg: rgba(240,136,62,0.1);
+  --red: #F85149;
+  --red-bg: rgba(248,81,73,0.1);
+  --sidebar-w: 240px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; }
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── LOGIN ── */
+#loginScreen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  flex-direction: column;
+  gap: 0;
+}
+
+.login-card {
+  width: 380px;
+  background: var(--bg2);
+  border: 1px solid var(--border-gold);
+  padding: 3rem 2.5rem;
+  position: relative;
+}
+
+.login-card::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+
+.login-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 0.3rem;
+}
+
+.login-sub {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+  margin-bottom: 2.5rem;
+}
+
+.login-field {
+  margin-bottom: 1.2rem;
+}
+
+.login-field label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.login-field input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 0.85rem 1rem;
+  color: var(--text-bright);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.login-field input:focus { border-color: var(--gold); }
+
+.login-btn {
+  width: 100%;
+  background: var(--gold);
+  border: none;
+  padding: 0.9rem;
+  color: #0D0F12;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+.login-btn:hover { background: var(--gold-light); }
+
+.login-error {
+  color: var(--red);
+  font-size: 0.8rem;
+  text-align: center;
+  margin-top: 0.75rem;
+  display: none;
+}
+
+.login-hint {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 1.5rem;
+}
+
+/* ── SIDEBAR ── */
+#appShell { display: none; width: 100%; height: 100%; }
+
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar-brand {
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-brand-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--gold);
+}
+
+.sidebar-brand-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  margin-top: 0.2rem;
+}
+
+.sidebar-section {
+  padding: 1.2rem 1rem 0.5rem;
+}
+
+.sidebar-section-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding: 0 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 0.1rem;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active { background: rgba(201,168,76,0.1); color: var(--gold); }
+
+.nav-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--gold);
+  color: var(--bg);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  border-radius: 6px;
+  transition: all 0.15s;
+  border: none;
+  background: none;
+  width: 100%;
+}
+.logout-btn:hover { color: var(--red); background: var(--red-bg); }
+
+/* ── MAIN ── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.topbar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.topbar-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-bright);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--green);
+  background: var(--green-bg);
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+}
+
+.live-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:0.5;transform:scale(0.8);}
+}
+
+.topbar-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.refresh-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.4rem 0.9rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  font-family: 'Noto Sans TC', sans-serif;
+}
+.refresh-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── CONTENT ── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+/* ── TABS ── */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── KPI GRID ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media(max-width:1100px){ .kpi-grid{ grid-template-columns: repeat(2,1fr); } }
+
+.kpi-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.kpi-card:hover { border-color: var(--border-gold); }
+
+.kpi-card::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+}
+.kpi-card.gold::before { background: var(--gold); }
+.kpi-card.green::before { background: var(--green); }
+.kpi-card.blue::before { background: var(--blue); }
+.kpi-card.purple::before { background: var(--purple); }
+
+.kpi-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.kpi-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  color: var(--text-bright);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.kpi-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.kpi-trend-up { color: var(--green); }
+.kpi-trend-dn { color: var(--red); }
+
+.kpi-icon {
+  position: absolute;
+  right: 1.2rem;
+  top: 1.2rem;
+  font-size: 1.8rem;
+  opacity: 0.12;
+}
+
+/* ── CHARTS ROW ── */
+.charts-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media(max-width:900px){ .charts-row{ grid-template-columns:1fr; } }
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.card-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-bright);
+  letter-spacing: 0.05em;
+}
+
+.card-meta {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* bar chart */
+.bar-chart { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+}
+
+.bar-label { width: 70px; color: var(--text-muted); flex-shrink:0; text-align:right; font-size:0.72rem; }
+.bar-track { flex:1; background: var(--bg4); border-radius:2px; height:8px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:2px; transition: width 1s cubic-bezier(0.25,0.46,0.45,0.94); }
+.bar-val { width:36px; text-align:right; color: var(--text); font-family:'JetBrains Mono',monospace; font-size:0.72rem; }
+
+/* donut */
+.donut-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.donut-svg { overflow: visible; }
+
+.donut-legend {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+}
+
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink:0;
+}
+
+.legend-label {
+  flex:1;
+  margin-left: 0.5rem;
+  color: var(--text-muted);
+}
+
+.legend-pct { color: var(--text); font-family:'JetBrains Mono',monospace; }
+
+/* ── VISITORS TABLE ── */
+.visits-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media(max-width:900px){ .visits-row{ grid-template-columns:1fr; } }
+
+/* line chart */
+.line-chart-wrap { position: relative; height: 140px; }
+
+.line-chart-wrap canvas,
+.line-chart-wrap svg { position:absolute; inset:0; }
+
+/* ── TABLE ── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.data-table thead tr {
+  border-bottom: 1px solid var(--border);
+}
+
+.data-table th {
+  text-align: left;
+  padding: 0.6rem 1rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.data-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text);
+  vertical-align: middle;
+}
+
+.data-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.badge-gold { background: rgba(201,168,76,0.15); color: var(--gold); }
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-blue { background: var(--blue-bg); color: var(--blue); }
+.badge-purple { background: var(--purple-bg); color: var(--purple); }
+.badge-orange { background: var(--orange-bg); color: var(--orange); }
+.badge-red { background: var(--red-bg); color: var(--red); }
+
+/* status */
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+}
+.status-dot::before {
+  content:'';
+  width:7px; height:7px;
+  border-radius:50%;
+}
+.status-new::before { background: var(--green); box-shadow:0 0 6px var(--green); }
+.status-contacted::before { background: var(--blue); }
+.status-visited::before { background: var(--purple); }
+.status-member::before { background: var(--gold); }
+
+/* action btns */
+.action-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.72rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s;
+  font-family: 'Noto Sans TC', sans-serif;
+  margin-right: 0.25rem;
+}
+.action-btn:hover { border-color: var(--gold); color: var(--gold); }
+.action-btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.filter-input {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 0.55rem 1rem;
+  color: var(--text);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.82rem;
+  outline: none;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+  min-width: 200px;
+}
+.filter-input:focus { border-color: var(--gold); }
+
+.filter-select {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 0.55rem 1rem;
+  color: var(--text);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.82rem;
+  outline: none;
+  border-radius: 4px;
+  cursor: pointer;
+  appearance: none;
+}
+.filter-select option { background: var(--bg3); }
+
+.filter-count {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ── SETTINGS ── */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media(max-width:800px){ .settings-grid{ grid-template-columns:1fr; } }
+
+.settings-section-title {
+  font-size: 0.8rem;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-gold);
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.85rem;
+}
+
+.setting-row:last-child { border-bottom: none; }
+
+.setting-label { color: var(--text); }
+.setting-desc { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+/* toggle */
+.toggle {
+  width: 40px; height: 22px;
+  background: var(--bg4);
+  border-radius: 11px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink:0;
+  border: none;
+}
+.toggle.on { background: var(--gold); }
+.toggle::after {
+  content:'';
+  position:absolute;
+  width:16px; height:16px;
+  background:#fff;
+  border-radius:50%;
+  top:3px; left:3px;
+  transition: transform 0.2s;
+}
+.toggle.on::after { transform: translateX(18px); }
+
+/* ── MODAL DETAIL ── */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.modal-bg.open { display: flex; }
+
+.detail-modal {
+  background: var(--bg2);
+  border: 1px solid var(--border-gold);
+  width: 500px;
+  max-width: 95vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 8px;
+  position: relative;
+}
+
+.detail-modal::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+
+.modal-head {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-head-title {
+  font-size: 0.95rem;
+  color: var(--text-bright);
+  font-weight: 500;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.25rem;
+  line-height:1;
+}
+.modal-close-btn:hover { color: var(--red); }
+
+.modal-body { padding: 1.5rem; }
+
+.detail-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+.detail-key { color: var(--text-muted); width: 100px; flex-shrink:0; }
+.detail-val { color: var(--text-bright); flex:1; }
+
+.status-select {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.4rem 0.75rem;
+  font-size: 0.82rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Noto Sans TC', sans-serif;
+}
+
+.note-area {
+  width:100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+  border-radius: 4px;
+  font-family: 'Noto Sans TC', sans-serif;
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  margin-top: 0.5rem;
+}
+.note-area:focus { border-color: var(--gold); }
+
+.save-btn {
+  background: var(--gold);
+  border: none;
+  color: var(--bg);
+  padding: 0.65rem 1.5rem;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-weight:700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+  margin-top: 1rem;
+}
+.save-btn:hover { background: var(--gold-light); }
+
+/* empty state */
+.empty-state {
+  text-align:center;
+  padding: 3rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+.empty-state .empty-icon { font-size:2.5rem; margin-bottom:0.75rem; opacity:0.5; }
+
+/* scrollbar */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">快意人生</div>
+    <div class="login-sub">後 台 管 理 系 統</div>
+    <div class="login-field">
+      <label>帳號</label>
+      <input type="text" id="loginUser" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>密碼</label>
+      <input type="password" id="loginPass" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">登 入</button>
+    <div class="login-error" id="loginErr">帳號或密碼錯誤</div>
+    <div class="login-hint">預設帳號：admin　密碼：kuayi2026</div>
+  </div>
+</div>
+
+<!-- ── APP SHELL ── -->
+<div id="appShell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-name">快意人生</div>
+      <div class="sidebar-brand-sub">ADMIN CONSOLE</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">總覽</div>
+      <button class="nav-item active" onclick="switchTab('dashboard',this)">
+        <span class="nav-icon">📊</span> 儀表板
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">數據分析</div>
+      <button class="nav-item" onclick="switchTab('visitors',this)">
+        <span class="nav-icon">👁️</span> 訪客分析
+      </button>
+      <button class="nav-item" onclick="switchTab('quiz',this)">
+        <span class="nav-icon">📋</span> 問卷結果
+        <span class="nav-badge" id="quizBadge">0</span>
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">客戶管理</div>
+      <button class="nav-item" onclick="switchTab('leads',this)">
+        <span class="nav-icon">👤</span> 聯絡資訊
+        <span class="nav-badge" id="leadsBadge">0</span>
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">系統</div>
+      <button class="nav-item" onclick="switchTab('settings',this)">
+        <span class="nav-icon">⚙️</span> 設定
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">
+        <span>🚪</span> 登出系統
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbarTitle">儀表板</div>
+      <div class="topbar-right">
+        <div class="live-badge"><div class="live-dot"></div>即時監控中</div>
+        <div class="topbar-time" id="topbarClock">--:--:--</div>
+        <button class="refresh-btn" onclick="refreshAll()">↻ 重新整理</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="tab-panel active" id="tab-dashboard">
+        <div class="kpi-grid">
+          <div class="kpi-card gold">
+            <div class="kpi-icon">👁️</div>
+            <div class="kpi-label">總訪客數</div>
+            <div class="kpi-value" id="kpiVisits">0</div>
+            <div class="kpi-sub"><span class="kpi-trend-up">↑</span> 今日 <span id="kpiToday">0</span> 人</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-icon">📋</div>
+            <div class="kpi-label">問卷填答</div>
+            <div class="kpi-value" id="kpiQuiz">0</div>
+            <div class="kpi-sub">完成率 <span id="kpiQuizRate">0</span>%</div>
+          </div>
+          <div class="kpi-card blue">
+            <div class="kpi-icon">📬</div>
+            <div class="kpi-label">聯絡申請</div>
+            <div class="kpi-value" id="kpiLeads">0</div>
+            <div class="kpi-sub"><span id="kpiNewLeads">0</span> 件待處理</div>
+          </div>
+          <div class="kpi-card purple">
+            <div class="kpi-icon">💰</div>
+            <div class="kpi-label">熱門方案</div>
+            <div class="kpi-value" style="font-size:1.3rem;" id="kpiTopPlan">—</div>
+            <div class="kpi-sub">問卷最多選擇</div>
+          </div>
+        </div>
+
+        <div class="charts-row">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">近7日訪客趨勢</div>
+              <div class="card-meta" id="chartMeta">—</div>
+            </div>
+            <div class="line-chart-wrap" id="lineChartWrap">
+              <svg id="lineChartSvg" width="100%" height="140" viewBox="0 0 600 140" preserveAspectRatio="none"></svg>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">問卷類型分佈</div>
+            </div>
+            <div class="donut-wrap">
+              <svg class="donut-svg" width="120" height="120" viewBox="0 0 120 120" id="donutSvg">
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#21262D" stroke-width="18"/>
+              </svg>
+              <div class="donut-legend" id="donutLegend">
+                <div class="empty-state" style="padding:0.5rem;">暫無數據</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="visits-row">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">方案興趣分佈</div>
+            </div>
+            <div class="bar-chart" id="planBarChart">
+              <div class="empty-state" style="padding:1rem;">暫無數據</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">最新聯絡申請</div>
+              <button class="refresh-btn" onclick="switchTab('leads', document.querySelector('[onclick*=leads]'))">查看全部</button>
+            </div>
+            <div id="recentLeads">
+              <div class="empty-state"><div class="empty-icon">📬</div>尚無申請資料</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── VISITORS ── -->
+      <div class="tab-panel" id="tab-visitors">
+        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+          <div class="kpi-card gold">
+            <div class="kpi-icon">👁️</div>
+            <div class="kpi-label">累計訪客</div>
+            <div class="kpi-value" id="vKpiTotal">0</div>
+            <div class="kpi-sub">自網站上線起</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-icon">📅</div>
+            <div class="kpi-label">今日訪客</div>
+            <div class="kpi-value" id="vKpiToday">0</div>
+            <div class="kpi-sub" id="vKpiDate">—</div>
+          </div>
+          <div class="kpi-card blue">
+            <div class="kpi-icon">⏱️</div>
+            <div class="kpi-label">平均停留</div>
+            <div class="kpi-value" id="vKpiDuration">—</div>
+            <div class="kpi-sub">預估停留時間</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-header">
+            <div class="card-title">每日訪客記錄</div>
+          </div>
+          <table class="data-table" id="visitorsTable">
+            <thead>
+              <tr>
+                <th>日期</th>
+                <th>訪客數</th>
+                <th>問卷完成</th>
+                <th>申請表單</th>
+                <th>轉換率</th>
+              </tr>
+            </thead>
+            <tbody id="visitorsBody">
+              <tr><td colspan="5"><div class="empty-state">暫無訪客記錄</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">訪客來源分析</div>
+          </div>
+          <div class="bar-chart" id="sourceBarChart" style="padding:0.5rem 0;">
+            <div class="empty-state">暫無數據</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── QUIZ ── -->
+      <div class="tab-panel" id="tab-quiz">
+        <div class="filter-bar">
+          <input class="filter-input" type="text" placeholder="搜尋姓名或類型…" oninput="filterQuiz(this.value)">
+          <select class="filter-select" id="quizTypeFilter" onchange="filterQuiz(document.querySelector('.filter-input').value)">
+            <option value="">全部類型</option>
+            <option>醫療安全型</option>
+            <option>社交尊榮型</option>
+            <option>生活品味型</option>
+            <option>家庭安心型</option>
+          </select>
+          <span class="filter-count" id="quizFilterCount">共 0 筆</span>
+          <button class="action-btn" onclick="exportQuiz()">⬇ 匯出 CSV</button>
+        </div>
+
+        <div class="card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>填答時間</th>
+                <th>結果類型</th>
+                <th>Q1</th>
+                <th>Q2</th>
+                <th>Q3</th>
+                <th>Q4</th>
+                <th>興趣方案</th>
+              </tr>
+            </thead>
+            <tbody id="quizBody">
+              <tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📋</div>尚無問卷資料<br><small style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem;display:block;">當訪客在 Landing Page 完成問卷後，資料將顯示於此</small></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── LEADS ── -->
+      <div class="tab-panel" id="tab-leads">
+        <div class="filter-bar">
+          <input class="filter-input" type="text" placeholder="搜尋姓名或電話…" oninput="filterLeads(this.value)">
+          <select class="filter-select" id="leadsStatusFilter" onchange="filterLeads(document.querySelector('.filter-input').value)">
+            <option value="">全部狀態</option>
+            <option>新申請</option>
+            <option>已聯繫</option>
+            <option>已參觀</option>
+            <option>已入會</option>
+          </select>
+          <select class="filter-select" onchange="filterLeads('')">
+            <option value="">全部方案</option>
+            <option>體驗方案</option>
+            <option>年度會員方案</option>
+            <option>頂尊Villa方案</option>
+            <option>先了解更多資訊</option>
+          </select>
+          <span class="filter-count" id="leadsFilterCount">共 0 筆</span>
+          <button class="action-btn" onclick="exportLeads()">⬇ 匯出 CSV</button>
+          <button class="action-btn" onclick="addDemoLead()" style="border-color:var(--green);color:var(--green);">＋ 新增測試資料</button>
+        </div>
+
+        <div class="card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>申請時間</th>
+                <th>姓名</th>
+                <th>電話</th>
+                <th>興趣方案</th>
+                <th>狀態</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="leadsBody">
+              <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📬</div>尚無聯絡申請<br><small style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem;display:block;">當訪客在 Landing Page 送出預約申請後，資料將顯示於此</small></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── SETTINGS ── -->
+      <div class="tab-panel" id="tab-settings">
+        <div class="settings-grid">
+          <div class="card">
+            <div class="settings-section-title">帳號安全</div>
+            <div class="setting-row">
+              <div><div class="setting-label">管理員帳號</div><div class="setting-desc">目前登入：admin</div></div>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">更改密碼</div><div class="setting-desc">建議定期更新密碼</div></div>
+              <button class="action-btn" onclick="changePassword()">修改</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="settings-section-title">通知設定</div>
+            <div class="setting-row">
+              <div><div class="setting-label">新申請提醒</div><div class="setting-desc">有新聯絡表單時顯示提示</div></div>
+              <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">問卷完成提醒</div><div class="setting-desc">訪客完成問卷時通知</div></div>
+              <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">每日報表</div><div class="setting-desc">每天自動彙整訪客數據</div></div>
+              <button class="toggle" onclick="this.classList.toggle('on')"></button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="settings-section-title">數據管理</div>
+            <div class="setting-row">
+              <div><div class="setting-label">匯出全部數據</div><div class="setting-desc">將所有資料匯出為 CSV</div></div>
+              <button class="action-btn" onclick="exportAll()">匯出</button>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">新增測試數據</div><div class="setting-desc">生成範例資料供展示用</div></div>
+              <button class="action-btn" onclick="generateDemoData()" style="border-color:var(--green);color:var(--green);">生成</button>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">清除所有資料</div><div class="setting-desc">清除本機儲存的全部數據</div></div>
+              <button class="action-btn danger" onclick="clearAllData()">清除</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="settings-section-title">系統資訊</div>
+            <div class="setting-row">
+              <div class="setting-label">版本</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--gold);">v1.0.0</div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">資料儲存</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">LocalStorage（本機）</div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Landing Page</div>
+              <a href="kuayi-landing.html" target="_blank" style="font-size:0.8rem;color:var(--blue);text-decoration:none;">開啟 ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /appShell -->
+
+<!-- DETAIL MODAL -->
+<div class="modal-bg" id="detailModal" onclick="if(event.target===this)closeModal()">
+  <div class="detail-modal">
+    <div class="modal-head">
+      <div class="modal-head-title" id="modalTitle">聯絡詳情</div>
+      <button class="modal-close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// STORAGE KEYS
+// ─────────────────────────────────────────────
+const KEYS = {
+  visits: 'kuayi_visits',
+  quiz:   'kuayi_quiz',
+  leads:  'kuayi_leads',
+  daily:  'kuayi_daily',
+};
+
+function load(k){ try{ return JSON.parse(localStorage.getItem(k))||[]; }catch(e){ return []; } }
+function save(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+
+// ─────────────────────────────────────────────
+// LOGIN
+// ─────────────────────────────────────────────
+function doLogin(){
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if(u==='admin' && p==='kuayi2026'){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('appShell').style.display='flex';
+    recordVisit();
+    refreshAll();
+    startClock();
+  } else {
+    document.getElementById('loginErr').style.display='block';
+  }
+}
+
+function doLogout(){
+  document.getElementById('appShell').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('loginPass').value='';
+}
+
+// ─────────────────────────────────────────────
+// CLOCK
+// ─────────────────────────────────────────────
+function startClock(){
+  function tick(){
+    const now = new Date();
+    document.getElementById('topbarClock').textContent =
+      now.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+// ─────────────────────────────────────────────
+// VISIT TRACKING
+// ─────────────────────────────────────────────
+function recordVisit(){
+  const today = new Date().toLocaleDateString('zh-TW');
+  let daily = load(KEYS.daily);
+  let dayEntry = daily.find(d=>d.date===today);
+  if(!dayEntry){ dayEntry={date:today,visits:0,quizCount:0,leadCount:0}; daily.push(dayEntry); }
+  dayEntry.visits++;
+  save(KEYS.daily, daily);
+}
+
+// ─────────────────────────────────────────────
+// TAB SWITCHING
+// ─────────────────────────────────────────────
+const tabTitles = {
+  dashboard:'儀表板', visitors:'訪客分析',
+  quiz:'問卷結果', leads:'聯絡資訊管理', settings:'系統設定'
+};
+
+function switchTab(name, btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  document.getElementById('topbarTitle').textContent = tabTitles[name]||name;
+  renderTab(name);
+}
+
+function renderTab(name){
+  if(name==='dashboard') renderDashboard();
+  else if(name==='visitors') renderVisitors();
+  else if(name==='quiz') renderQuizTable();
+  else if(name==='leads') renderLeadsTable();
+}
+
+// ─────────────────────────────────────────────
+// REFRESH ALL
+// ─────────────────────────────────────────────
+function refreshAll(){
+  updateBadges();
+  const active = document.querySelector('.tab-panel.active');
+  if(active) renderTab(active.id.replace('tab-',''));
+}
+
+function updateBadges(){
+  const quiz = load(KEYS.quiz);
+  const leads = load(KEYS.leads);
+  const newLeads = leads.filter(l=>l.status==='新申請').length;
+  document.getElementById('quizBadge').textContent = quiz.length;
+  document.getElementById('leadsBadge').textContent = newLeads;
+}
+
+// ─────────────────────────────────────────────
+// DASHBOARD
+// ─────────────────────────────────────────────
+function renderDashboard(){
+  const daily = load(KEYS.daily);
+  const quiz  = load(KEYS.quiz);
+  const leads = load(KEYS.leads);
+
+  const totalVisits = daily.reduce((s,d)=>s+d.visits,0);
+  const today = new Date().toLocaleDateString('zh-TW');
+  const todayEntry = daily.find(d=>d.date===today);
+  const todayVisits = todayEntry ? todayEntry.visits : 0;
+  const newLeads = leads.filter(l=>l.status==='新申請').length;
+
+  document.getElementById('kpiVisits').textContent = totalVisits;
+  document.getElementById('kpiToday').textContent = todayVisits;
+  document.getElementById('kpiQuiz').textContent = quiz.length;
+  document.getElementById('kpiQuizRate').textContent = totalVisits > 0 ? Math.round(quiz.length/totalVisits*100) : 0;
+  document.getElementById('kpiLeads').textContent = leads.length;
+  document.getElementById('kpiNewLeads').textContent = newLeads;
+
+  // top plan
+  const planCounts = {};
+  leads.forEach(l=>{ planCounts[l.interest]=(planCounts[l.interest]||0)+1; });
+  const topPlan = Object.entries(planCounts).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('kpiTopPlan').textContent = topPlan
+    ? topPlan[0].replace('方案','').trim() : '—';
+
+  renderLineChart(daily);
+  renderDonut(quiz);
+  renderPlanBar(leads);
+  renderRecentLeads(leads);
+}
+
+// Line chart
+function renderLineChart(daily){
+  const svg = document.getElementById('lineChartSvg');
+  const last7 = getLast7Days();
+  const map = {};
+  daily.forEach(d=>map[d.date]=d.visits);
+  const vals = last7.map(d=>map[d]||0);
+  const max = Math.max(...vals, 1);
+
+  const W=600, H=120, padL=10, padR=10, padT=10, padB=20;
+  const pw = W-padL-padR, ph = H-padT-padB;
+  const n = vals.length;
+  const pts = vals.map((v,i)=>{
+    const x = padL + i/(n-1)*pw;
+    const y = padT + (1-v/max)*ph;
+    return `${x},${y}`;
+  });
+
+  const areaPath = `M${pts[0]} L${pts.join(' L')} L${padL+pw},${padT+ph} L${padL},${padT+ph} Z`;
+  const linePath = `M${pts[0]} L${pts.join(' L')}`;
+
+  const labels = last7.map(d=>d.slice(5));
+
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#C9A84C" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#C9A84C" stop-opacity="0.0"/>
+      </linearGradient>
+    </defs>
+    <path d="${areaPath}" fill="url(#lineGrad)"/>
+    <path d="${linePath}" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linejoin="round"/>
+    ${pts.map((pt,i)=>{
+      const [x,y]=pt.split(',');
+      return `<circle cx="${x}" cy="${y}" r="4" fill="#C9A84C"/>
+              <text x="${x}" y="${H}" text-anchor="middle" fill="#606878" font-size="10" font-family="JetBrains Mono">${labels[i]}</text>
+              <text x="${x}" y="${parseFloat(y)-8}" text-anchor="middle" fill="#E8C97A" font-size="10" font-family="JetBrains Mono">${vals[i]}</text>`;
+    }).join('')}
+  `;
+  document.getElementById('chartMeta').textContent =
+    `最高 ${max} 人 · 共 ${vals.reduce((a,b)=>a+b,0)} 人次`;
+}
+
+function getLast7Days(){
+  const days=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    days.push(d.toLocaleDateString('zh-TW'));
+  }
+  return days;
+}
+
+// Donut
+function renderDonut(quiz){
+  const types = ['醫療安全型','社交尊榮型','生活品味型','家庭安心型'];
+  const colors = ['#C9A84C','#3FB950','#58A6FF','#BC8CFF'];
+  const counts = types.map(t=>quiz.filter(q=>q.result===t).length);
+  const total = counts.reduce((a,b)=>a+b,0)||1;
+
+  const r=48, cx=60, cy=60, sw=18;
+  const circ = 2*Math.PI*r;
+  let offset=0;
+
+  const svg = document.getElementById('donutSvg');
+  svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#21262D" stroke-width="${sw}"/>`;
+
+  counts.forEach((c,i)=>{
+    const pct = c/total;
+    const dash = pct*circ;
+    const el = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    el.setAttribute('cx',cx); el.setAttribute('cy',cy); el.setAttribute('r',r);
+    el.setAttribute('fill','none');
+    el.setAttribute('stroke',colors[i]);
+    el.setAttribute('stroke-width',sw);
+    el.setAttribute('stroke-dasharray',`${dash} ${circ-dash}`);
+    el.setAttribute('stroke-dashoffset',-(offset*circ-circ/4));
+    el.setAttribute('transform',`rotate(-90 ${cx} ${cy})`);
+    svg.appendChild(el);
+    offset += pct;
+  });
+
+  // center text
+  const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+  txt.setAttribute('x',cx); txt.setAttribute('y',cy+4);
+  txt.setAttribute('text-anchor','middle');
+  txt.setAttribute('fill','#F0F4F8');
+  txt.setAttribute('font-size','16');
+  txt.setAttribute('font-family','Playfair Display, serif');
+  txt.textContent = total;
+  svg.appendChild(txt);
+
+  const leg = document.getElementById('donutLegend');
+  leg.innerHTML = types.map((t,i)=>`
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${colors[i]}"></div>
+      <div class="legend-label">${t}</div>
+      <div class="legend-pct">${counts[i]}</div>
+    </div>
+  `).join('');
+}
+
+// Plan bar
+function renderPlanBar(leads){
+  const plans = ['體驗方案','年度會員方案','頂尊Villa方案','先了解更多資訊'];
+  const colors = ['#C9A84C','#3FB950','#BC8CFF','#58A6FF'];
+  const counts = plans.map(p=>leads.filter(l=>l.interest===p).length);
+  const max = Math.max(...counts,1);
+
+  const el = document.getElementById('planBarChart');
+  if(!leads.length){ el.innerHTML='<div class="empty-state">暫無數據</div>'; return; }
+
+  el.innerHTML = plans.map((p,i)=>`
+    <div class="bar-row">
+      <div class="bar-label">${p.replace('方案','').trim()}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${counts[i]/max*100}%;background:${colors[i]}"></div></div>
+      <div class="bar-val">${counts[i]}</div>
+    </div>
+  `).join('');
+}
+
+// Recent leads
+function renderRecentLeads(leads){
+  const el = document.getElementById('recentLeads');
+  if(!leads.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">📬</div>尚無申請資料</div>'; return; }
+  const recent = [...leads].reverse().slice(0,5);
+  el.innerHTML = `<table class="data-table">
+    <thead><tr><th>姓名</th><th>方案</th><th>狀態</th></tr></thead>
+    <tbody>${recent.map(l=>`
+      <tr>
+        <td>${l.name}</td>
+        <td><span class="badge badge-gold" style="font-size:0.68rem;">${l.interest||'—'}</span></td>
+        <td><span class="status-dot status-${statusClass(l.status)}">${l.status}</span></td>
+      </tr>
+    `).join('')}</tbody>
+  </table>`;
+}
+
+function statusClass(s){
+  if(s==='新申請') return 'new';
+  if(s==='已聯繫') return 'contacted';
+  if(s==='已參觀') return 'visited';
+  if(s==='已入會') return 'member';
+  return 'new';
+}
+
+// ─────────────────────────────────────────────
+// VISITORS TAB
+// ─────────────────────────────────────────────
+function renderVisitors(){
+  const daily = load(KEYS.daily);
+  const total = daily.reduce((s,d)=>s+d.visits,0);
+  const today = new Date().toLocaleDateString('zh-TW');
+  const todayE = daily.find(d=>d.date===today);
+
+  document.getElementById('vKpiTotal').textContent = total;
+  document.getElementById('vKpiToday').textContent = todayE ? todayE.visits : 0;
+  document.getElementById('vKpiDate').textContent = today;
+  document.getElementById('vKpiDuration').textContent = '~3分鐘';
+
+  const quiz  = load(KEYS.quiz);
+  const leads = load(KEYS.leads);
+
+  // table
+  const body = document.getElementById('visitorsBody');
+  if(!daily.length){ body.innerHTML='<tr><td colspan="5"><div class="empty-state">暫無訪客記錄</div></td></tr>'; return; }
+  body.innerHTML = [...daily].reverse().map(d=>{
+    const q = quiz.filter(q=>q.date===d.date).length;
+    const l = leads.filter(l=>l.date===d.date).length;
+    const rate = d.visits>0 ? Math.round(l/d.visits*100) : 0;
+    return `<tr>
+      <td style="font-family:'JetBrains Mono',monospace;">${d.date}</td>
+      <td><strong style="color:var(--text-bright);">${d.visits}</strong></td>
+      <td>${q}</td>
+      <td>${l}</td>
+      <td><span class="badge ${rate>5?'badge-green':rate>0?'badge-gold':'badge-blue'}">${rate}%</span></td>
+    </tr>`;
+  }).join('');
+
+  // source bar (mock)
+  const sourceEl = document.getElementById('sourceBarChart');
+  sourceEl.innerHTML = `
+    <div class="bar-row"><div class="bar-label">直接訪問</div><div class="bar-track"><div class="bar-fill" style="width:55%;background:var(--gold)"></div></div><div class="bar-val">${Math.round(total*0.55)}</div></div>
+    <div class="bar-row"><div class="bar-label">社群媒體</div><div class="bar-track"><div class="bar-fill" style="width:28%;background:var(--blue)"></div></div><div class="bar-val">${Math.round(total*0.28)}</div></div>
+    <div class="bar-row"><div class="bar-label">搜尋引擎</div><div class="bar-track"><div class="bar-fill" style="width:12%;background:var(--purple)"></div></div><div class="bar-val">${Math.round(total*0.12)}</div></div>
+    <div class="bar-row"><div class="bar-label">其他推薦</div><div class="bar-track"><div class="bar-fill" style="width:5%;background:var(--green)"></div></div><div class="bar-val">${Math.round(total*0.05)}</div></div>
+  `;
+}
+
+// ─────────────────────────────────────────────
+// QUIZ TAB
+// ─────────────────────────────────────────────
+const qLabels = ['醫療/健康','社交/尊嚴','退休生活','入住方式','顧慮面向'];
+const optLabels = [
+  ['醫療安全','社交尊嚴','生活享受','家人安心'],
+  ['健康老化','交流朋友','持續學習','尊榮悠閒'],
+  ['先體驗','年度會員','長住Villa','了解資訊'],
+  ['失去自主','脫節社交','醫療不足','子女擔心']
+];
+
+function renderQuizTable(filter='', typeFilter=''){
+  const quiz = load(KEYS.quiz);
+  const tf = typeFilter || document.getElementById('quizTypeFilter').value;
+  let data = quiz;
+  if(tf) data = data.filter(q=>q.result===tf);
+  if(filter) data = data.filter(q=>q.result.includes(filter));
+
+  document.getElementById('quizFilterCount').textContent = `共 ${data.length} 筆`;
+  const body = document.getElementById('quizBody');
+  if(!data.length){
+    body.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📋</div>暫無符合的問卷資料</div></td></tr>';
+    return;
+  }
+  const typeBadge={'醫療安全型':'badge-red','社交尊榮型':'badge-purple','生活品味型':'badge-gold','家庭安心型':'badge-blue'};
+  body.innerHTML = [...data].reverse().map((q,i)=>{
+    const ans = q.answers||[];
+    return `<tr>
+      <td style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;">${data.length-i}</td>
+      <td style="font-size:0.75rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">${q.time||q.date||'—'}</td>
+      <td><span class="badge ${typeBadge[q.result]||'badge-gold'}">${q.result}</span></td>
+      ${ans.map((a,qi)=>`<td style="font-size:0.75rem;">${optLabels[qi]?.[a]||'—'}</td>`).join('')}
+      ${ans.length<4?'<td>—</td>'.repeat(4-ans.length):''}
+      <td style="font-size:0.75rem;">${q.interest||'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterQuiz(val){
+  const tf = document.getElementById('quizTypeFilter').value;
+  renderQuizTable(val, tf);
+}
+
+// ─────────────────────────────────────────────
+// LEADS TAB
+// ─────────────────────────────────────────────
+function renderLeadsTable(filter=''){
+  const leads = load(KEYS.leads);
+  const sf = document.getElementById('leadsStatusFilter').value;
+  let data = leads;
+  if(sf) data = data.filter(l=>l.status===sf);
+  if(filter) data = data.filter(l=>l.name.includes(filter)||l.phone.includes(filter));
+
+  document.getElementById('leadsFilterCount').textContent = `共 ${data.length} 筆`;
+  const body = document.getElementById('leadsBody');
+  if(!data.length){
+    body.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📬</div>暫無聯絡申請</div></td></tr>';
+    return;
+  }
+  const planBadge={'體驗方案（3天2夜）':'badge-green','年度會員方案':'badge-gold','頂尊Villa方案':'badge-purple','先了解更多資訊':'badge-blue'};
+  body.innerHTML = [...data].reverse().map((l,i)=>`
+    <tr>
+      <td style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;">${data.length-i}</td>
+      <td style="font-size:0.75rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">${l.time||l.date||'—'}</td>
+      <td style="color:var(--text-bright);font-weight:500;">${l.name}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;">${l.phone}</td>
+      <td><span class="badge ${planBadge[l.interest]||'badge-gold'}" style="font-size:0.68rem;">${l.interest||'—'}</span></td>
+      <td><span class="status-dot status-${statusClass(l.status)}">${l.status}</span></td>
+      <td>
+        <button class="action-btn" onclick="openLeadDetail(${data.length-1-i})">詳情</button>
+        <button class="action-btn danger" onclick="deleteLead('${l.id}')">刪除</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterLeads(val){
+  renderLeadsTable(val);
+}
+
+function openLeadDetail(idx){
+  const leads = load(KEYS.leads);
+  const l = [...leads].reverse()[idx];
+  if(!l) return;
+  document.getElementById('modalTitle').textContent = `聯絡詳情 — ${l.name}`;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="detail-row"><div class="detail-key">姓名</div><div class="detail-val">${l.name}</div></div>
+    <div class="detail-row"><div class="detail-key">電話</div><div class="detail-val" style="font-family:'JetBrains Mono',monospace;">${l.phone}</div></div>
+    <div class="detail-row"><div class="detail-key">興趣方案</div><div class="detail-val">${l.interest||'—'}</div></div>
+    <div class="detail-row"><div class="detail-key">申請時間</div><div class="detail-val" style="font-size:0.8rem;">${l.time||'—'}</div></div>
+    <div class="detail-row">
+      <div class="detail-key">狀態</div>
+      <div class="detail-val">
+        <select class="status-select" id="detailStatus" onchange="updateLeadStatus('${l.id}',this.value)">
+          <option ${l.status==='新申請'?'selected':''}>新申請</option>
+          <option ${l.status==='已聯繫'?'selected':''}>已聯繫</option>
+          <option ${l.status==='已參觀'?'selected':''}>已參觀</option>
+          <option ${l.status==='已入會'?'selected':''}>已入會</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.4rem;">備註</div>
+      <textarea class="note-area" id="detailNote" placeholder="輸入跟進備註…">${l.note||''}</textarea>
+      <button class="save-btn" onclick="saveNote('${l.id}')">儲存備註</button>
+    </div>
+  `;
+  document.getElementById('detailModal').classList.add('open');
+}
+
+function updateLeadStatus(id, status){
+  const leads = load(KEYS.leads);
+  const l = leads.find(x=>x.id===id);
+  if(l){ l.status=status; save(KEYS.leads, leads); updateBadges(); renderLeadsTable(); }
+}
+
+function saveNote(id){
+  const leads = load(KEYS.leads);
+  const l = leads.find(x=>x.id===id);
+  if(l){
+    l.note = document.getElementById('detailNote').value;
+    save(KEYS.leads, leads);
+    closeModal();
+  }
+}
+
+function deleteLead(id){
+  if(!confirm('確定刪除此筆資料？')) return;
+  let leads = load(KEYS.leads);
+  leads = leads.filter(l=>l.id!==id);
+  save(KEYS.leads, leads);
+  updateBadges();
+  renderLeadsTable();
+}
+
+function closeModal(){
+  document.getElementById('detailModal').classList.remove('open');
+}
+
+// ─────────────────────────────────────────────
+// EXPORT
+// ─────────────────────────────────────────────
+function exportCSV(filename, rows){
+  const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download = filename;
+  a.click();
+}
+
+function exportLeads(){
+  const leads = load(KEYS.leads);
+  const rows = [['#','申請時間','姓名','電話','興趣方案','狀態','備註'],
+    ...leads.map((l,i)=>[i+1,l.time||'',l.name,l.phone,l.interest||'',l.status,l.note||''])];
+  exportCSV('kuayi_leads_'+new Date().toLocaleDateString('zh-TW')+'.csv', rows);
+}
+
+function exportQuiz(){
+  const quiz = load(KEYS.quiz);
+  const rows = [['#','填答時間','結果類型','Q1','Q2','Q3','Q4','興趣方案'],
+    ...quiz.map((q,i)=>{
+      const a = q.answers||[];
+      return [i+1,q.time||'',q.result,
+        optLabels[0]?.[a[0]]||'',optLabels[1]?.[a[1]]||'',
+        optLabels[2]?.[a[2]]||'',optLabels[3]?.[a[3]]||'',q.interest||''];
+    })];
+  exportCSV('kuayi_quiz_'+new Date().toLocaleDateString('zh-TW')+'.csv', rows);
+}
+
+function exportAll(){
+  exportLeads();
+  setTimeout(exportQuiz, 500);
+}
+
+// ─────────────────────────────────────────────
+// DEMO DATA
+// ─────────────────────────────────────────────
+function generateDemoData(){
+  if(!confirm('確定生成示範資料？（這會增加測試數據）')) return;
+
+  const today = new Date();
+  const daily = load(KEYS.daily);
+  for(let i=6;i>=0;i--){
+    const d=new Date(); d.setDate(today.getDate()-i);
+    const ds = d.toLocaleDateString('zh-TW');
+    if(!daily.find(x=>x.date===ds)){
+      daily.push({date:ds, visits: Math.floor(Math.random()*15)+3});
+    }
+  }
+  save(KEYS.daily, daily);
+
+  const results=['醫療安全型','社交尊榮型','生活品味型','家庭安心型'];
+  const quiz = load(KEYS.quiz);
+  const now = new Date();
+  for(let i=0;i<8;i++){
+    const r=results[Math.floor(Math.random()*4)];
+    const t=new Date(now-Math.random()*7*86400000);
+    quiz.push({
+      id:'q'+Date.now()+i,
+      result: r,
+      answers: [Math.floor(Math.random()*4),Math.floor(Math.random()*4),Math.floor(Math.random()*4),Math.floor(Math.random()*4)],
+      interest: ['體驗方案（3天2夜）','年度會員方案','頂尊Villa方案'][Math.floor(Math.random()*3)],
+      date: t.toLocaleDateString('zh-TW'),
+      time: t.toLocaleString('zh-TW'),
+    });
+  }
+  save(KEYS.quiz, quiz);
+
+  const names=['陳先生','王女士','林董事長','張總經理','吳教授','劉女士','黃先生','蔡總裁'];
+  const phones=['0912-345-678','0923-456-789','0934-567-890','0945-678-901','0956-789-012','0967-890-123','0978-901-234','0989-012-345'];
+  const leads = load(KEYS.leads);
+  const plans=['體驗方案（3天2夜）','年度會員方案','頂尊Villa方案','先了解更多資訊'];
+  const statuses=['新申請','新申請','已聯繫','已參觀'];
+  for(let i=0;i<6;i++){
+    const t=new Date(now-Math.random()*7*86400000);
+    leads.push({
+      id:'l'+Date.now()+i,
+      name: names[Math.floor(Math.random()*names.length)],
+      phone: phones[Math.floor(Math.random()*phones.length)],
+      interest: plans[Math.floor(Math.random()*plans.length)],
+      status: statuses[Math.floor(Math.random()*statuses.length)],
+      note: '',
+      date: t.toLocaleDateString('zh-TW'),
+      time: t.toLocaleString('zh-TW'),
+    });
+  }
+  save(KEYS.leads, leads);
+
+  refreshAll();
+  alert('✅ 示範資料已生成完成！');
+}
+
+function addDemoLead(){
+  const names=['陳先生','王女士','林董事長','張總','吳教授'];
+  const plans=['體驗方案（3天2夜）','年度會員方案','頂尊Villa方案','先了解更多資訊'];
+  const leads=load(KEYS.leads);
+  const t=new Date();
+  leads.push({
+    id:'l'+Date.now(),
+    name: names[Math.floor(Math.random()*names.length)],
+    phone: '09'+Math.floor(Math.random()*100000000).toString().padStart(8,'0'),
+    interest: plans[Math.floor(Math.random()*plans.length)],
+    status:'新申請', note:'',
+    date: t.toLocaleDateString('zh-TW'),
+    time: t.toLocaleString('zh-TW'),
+  });
+  save(KEYS.leads, leads);
+  updateBadges();
+  renderLeadsTable();
+}
+
+function clearAllData(){
+  if(!confirm('確定清除所有數據？此操作無法復原！')) return;
+  Object.values(KEYS).forEach(k=>localStorage.removeItem(k));
+  refreshAll();
+  alert('✅ 已清除所有數據。');
+}
+
+function changePassword(){
+  const np = prompt('輸入新密碼（至少6字元）：');
+  if(!np||np.length<6){ alert('密碼太短！'); return; }
+  alert('✅ 密碼已更新（注意：重整頁面後仍為預設密碼，如需永久保存請修改原始碼）');
+}
+</script>
+</body>
+</html>
